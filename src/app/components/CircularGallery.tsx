@@ -146,7 +146,7 @@ interface MediaProps {
   renderer: Renderer;
   scene: Transform;
   screen: ScreenSize;
-  text: string;
+  text?: string;
   viewport: Viewport;
   bend: number;
   textColor: string;
@@ -164,7 +164,7 @@ class Media {
   renderer: Renderer;
   scene: Transform;
   screen: ScreenSize;
-  text: string;
+  text?: string;
   viewport: Viewport;
   bend: number;
   textColor: string;
@@ -172,7 +172,7 @@ class Media {
   font?: string;
   program!: Program;
   plane!: Mesh;
-  title!: Title;
+  title?: Title;
   scale!: number;
   padding!: number;
   width!: number;
@@ -214,7 +214,7 @@ class Media {
     this.font = font;
     this.createShader();
     this.createMesh();
-    this.createTitle();
+    if (text) this.createTitle();
     this.onResize();
   }
 
@@ -683,18 +683,19 @@ export default function CircularGallery({
       if (appAny.medias) {
         const newColor = document.documentElement.classList.contains('dark') ? textColorDark : textColor;
         appAny.medias.forEach((media: any) => {
-          if (media.title && media.title.mesh) {
-            media.title.mesh.parent.removeChild(media.title.mesh);
+          if (media.text) {
+            if (media.title && media.title.mesh) {
+              media.title.mesh.parent.removeChild(media.title.mesh);
+            }
+            media.title = new Title({
+              gl: media.gl,
+              plane: media.plane,
+              renderer: appAny.renderer,
+              text: media.text,
+              textColor: newColor,
+              font: media.font
+            });
           }
-          media.textColor = newColor;
-          media.title = new Title({
-            gl: media.gl,
-            plane: media.plane,
-            renderer: appAny.renderer,
-            text: media.text,
-            textColor: newColor,
-            font: media.font
-          });
         });
       }
     });
