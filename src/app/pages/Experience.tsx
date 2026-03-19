@@ -9,10 +9,15 @@ import {
 } from "motion/react";
 import { Car } from "lucide-react";
 import { experiences } from "../data";
+import { translations } from "../translations";
+import { useLanguage } from "../context/LanguageContext";
 
 export function Experience() {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollVelocity = useMotionValue(0);
+  const { lang } = useLanguage();
+
+  const t = translations[lang];
 
   // Track horizontal scroll of the container
   const { scrollXProgress } = useScroll({
@@ -82,39 +87,78 @@ export function Experience() {
     [N]
   );
 
-  // Native scrolling with wheel-to-horizontal mapping + snap on settle
+  // Auto-drive car to nearest station after scrolling stops - consistent smooth animation
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
+    let scrollEndTimeout: ReturnType<typeof setTimeout>;
+    let animationFrameId: number | null = null;
+    let isAnimating = false;
     let lastScrollLeft = container.scrollLeft;
-    let velocityFrame: number | null = null;
+    let scrollVelocity = 0;
 
-    // Track velocity for car tilt effect
-    const trackVelocity = () => {
-      const delta = container.scrollLeft - lastScrollLeft;
-      scrollVelocity.set(delta);
+    // Track scroll velocity to detect when scrolling truly stops
+    const trackScrollVelocity = () => {
+      scrollVelocity = container.scrollLeft - lastScrollLeft;
       lastScrollLeft = container.scrollLeft;
-      velocityFrame = requestAnimationFrame(trackVelocity);
     };
-    velocityFrame = requestAnimationFrame(trackVelocity);
 
-    // Map vertical wheel to native horizontal scroll (for mouse wheel users)
-    const handleWheel = (e: WheelEvent) => {
-      const isVerticalScroll =
-        Math.abs(e.deltaY) > Math.abs(e.deltaX) && Math.abs(e.deltaX) < 10;
-      if (!isVerticalScroll) return;
+    // Handle scroll end with delay, then auto-drive to nearest station
+    const handleScrollEnd = () => {
+      if (isAnimating) return;
 
-      const isAtStart = container.scrollLeft <= 0 && e.deltaY < 0;
-      const isAtEnd =
-        container.scrollWidth - container.clientWidth <=
-          container.scrollLeft + 1 && e.deltaY > 0;
+      clearTimeout(scrollEndTimeout);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
 
-      if (isAtStart || isAtEnd) return;
+      trackScrollVelocity();
 
-      e.preventDefault();
-      container.scrollLeft += e.deltaY;
+      // Wait until scroll velocity is near zero (truly stopped)
+      scrollEndTimeout = setTimeout(() => {
+        const totalScrollable = container.scrollWidth - container.clientWidth;
+        if (totalScrollable <= 0) return;
+
+        const progress = container.scrollLeft / totalScrollable;
+        const nearestIndex = Math.round(progress * N);
+        const snapTarget = getStationScroll(nearestIndex);
+
+        // Use proportional threshold based on station spacing
+        const threshold = itemSpacing * 0.15; // 15% of station spacing
+
+        if (Math.abs(container.scrollLeft - snapTarget) > threshold) {
+          const start = container.scrollLeft;
+          const distance = snapTarget - start;
+          const duration = 700;
+          const startTime = performance.now();
+          isAnimating = true;
+
+          const easeInOutCubic = (t: number) =>
+            t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+          const animateScroll = (currentTime: number) => {
+            const elapsed = currentTime - startTime;
+            const t = Math.min(elapsed / duration, 1);
+            const easedT = easeInOutCubic(t);
+            container.scrollLeft = start + distance * easedT;
+
+            if (t < 1) {
+              animationFrameId = requestAnimationFrame(animateScroll);
+            } else {
+              isAnimating = false;
+              lastScrollLeft = container.scrollLeft;
+            }
+          };
+          animationFrameId = requestAnimationFrame(animateScroll);
+        } else {
+          // Snap to exact position without animation if very close
+          container.scrollLeft = snapTarget;
+          lastScrollLeft = snapTarget;
+        }
+      }, Math.max(150, Math.abs(scrollVelocity) * 50)); // Dynamic delay based on velocity
     };
+
+    // Native horizontal scroll only - listen to scroll events
+    container.addEventListener("scroll", handleScrollEnd, { passive: true });
 
     // Keyboard navigation
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -127,35 +171,15 @@ export function Experience() {
       }
     };
 
-    // Snap to nearest station when scrolling stops
-    let snapTimeout: ReturnType<typeof setTimeout>;
-    const handleScrollEnd = () => {
-      clearTimeout(snapTimeout);
-      snapTimeout = setTimeout(() => {
-        const totalScrollable = container.scrollWidth - container.clientWidth;
-        if (totalScrollable <= 0) return;
-        const progress = container.scrollLeft / totalScrollable;
-        const nearestIndex = Math.round(progress * N);
-        const snapTarget = getStationScroll(nearestIndex);
-
-        if (Math.abs(container.scrollLeft - snapTarget) > 2) {
-          container.scrollTo({ left: snapTarget, behavior: "smooth" });
-        }
-      }, 200);
-    };
-
-    container.addEventListener("wheel", handleWheel, { passive: false });
-    container.addEventListener("scroll", handleScrollEnd, { passive: true });
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      container.removeEventListener("wheel", handleWheel);
       container.removeEventListener("scroll", handleScrollEnd);
       window.removeEventListener("keydown", handleKeyDown);
-      clearTimeout(snapTimeout);
-      if (velocityFrame) cancelAnimationFrame(velocityFrame);
+      clearTimeout(scrollEndTimeout);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
     };
-  }, [activeIndex, N, getStationScroll, scrollVelocity, itemSpacing]);
+  }, [N, getStationScroll, activeIndex, itemSpacing]);
 
   return (
     <div className="w-full pb-32 pt-10">
@@ -167,7 +191,7 @@ export function Experience() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="text-5xl md:text-7xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] mb-4 pointer-events-auto"
         >
-          Werdegang.
+          {t.experience.title}
         </motion.h1>
         <motion.p
           initial={{ opacity: 0 }}
@@ -175,16 +199,12 @@ export function Experience() {
           transition={{ delay: 0.2, duration: 0.8 }}
           className="text-xl text-[#55555a] dark:text-[#e5e5ea] font-light max-w-2xl pointer-events-auto"
         >
-          Meine Stationen, Erfahrungen und Weiterbildungen.
+          {t.experience.description}
         </motion.p>
       </div>
 
       {/* The Timeline Area */}
-      <div className="relative w-full h-[700px] md:h-[850px] overflow-hidden z-10">
-        {/* Edge fade gradients */}
-        <div className="absolute top-0 left-0 bottom-0 w-16 md:w-24 bg-gradient-to-r from-[#fafafa] dark:from-[#111111] to-transparent z-30 pointer-events-none transition-colors duration-500" />
-        <div className="absolute top-0 right-0 bottom-0 w-16 md:w-24 bg-gradient-to-l from-[#fafafa] dark:from-[#111111] to-transparent z-30 pointer-events-none transition-colors duration-500" />
-
+      <div className="relative w-full h-[800px] md:h-[950px] overflow-hidden z-10">
         {/* Scrollable Container */}
         <div
           ref={containerRef}
@@ -288,9 +308,9 @@ export function Experience() {
                     : "text-[#1d1d1f]/30 dark:text-[#f5f5f7]/30 opacity-60"
                 }`}
               >
-                Fortsetzung
+                {t.experience.fortsetzung}
                 <br />
-                folgt.
+                {t.experience.folgt}
               </h2>
             </div>
           </div>
@@ -362,6 +382,14 @@ export function Experience() {
 
 // Subcomponent for the experience card
 function ItemCard({ exp, isActive }: { exp: any; isActive: boolean }) {
+  const { lang } = useLanguage();
+
+  const role = lang === 'en' && exp.roleEn ? exp.roleEn : exp.role;
+  const company = lang === 'en' && exp.companyEn ? exp.companyEn : exp.company;
+  const period = lang === 'en' && exp.periodEn ? exp.periodEn : exp.period;
+  const description = lang === 'en' && exp.descriptionEn ? exp.descriptionEn : exp.description;
+  const details = lang === 'en' && exp.detailsEn ? exp.detailsEn : exp.details;
+
   return (
     <motion.div
       animate={{
@@ -370,10 +398,10 @@ function ItemCard({ exp, isActive }: { exp: any; isActive: boolean }) {
         y: isActive ? 0 : 4,
       }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className={`bg-transparent p-6 md:p-8 rounded-3xl border transition-all duration-500 w-[300px] md:w-[380px] max-h-[420px] md:max-h-[340px] overflow-hidden relative z-10 ${
+      className={`p-6 md:p-8 rounded-3xl border transition-all duration-500 w-[300px] md:w-[380px] max-h-[420px] md:max-h-[340px] overflow-hidden relative z-10 backdrop-blur-md ${
         isActive
-          ? "border-black/20 dark:border-white/20 shadow-xl shadow-black/5 dark:shadow-white/5 bg-white/20 dark:bg-[#111111]/60 backdrop-blur-xl"
-          : "border-black/5 dark:border-white/5 dark:bg-[#111111]/40 dark:backdrop-blur-md"
+          ? "border-black/20 dark:border-white/20 shadow-lg bg-white/80 dark:bg-black/80"
+          : "border-black/10 dark:border-white/10 bg-white/40 dark:bg-black/40"
       }`}
     >
       <span
@@ -383,7 +411,7 @@ function ItemCard({ exp, isActive }: { exp: any; isActive: boolean }) {
             : "border-black/10 dark:border-white/10 text-[#55555a] dark:text-[#e5e5ea]"
         }`}
       >
-        {exp.period}
+        {period}
       </span>
       <h3
         className={`text-xl font-semibold mb-2 leading-tight transition-colors duration-500 ${
@@ -392,15 +420,15 @@ function ItemCard({ exp, isActive }: { exp: any; isActive: boolean }) {
             : "text-[#55555a] dark:text-[#e5e5ea]"
         }`}
       >
-        {exp.role}
+        {role}
       </h3>
       <h4 className="text-sm text-[#55555a] dark:text-[#e5e5ea] font-medium">
-        {exp.company}
+        {company}
       </h4>
 
       {/* Dynamic Details Expansion */}
       <AnimatePresence>
-        {isActive && (exp.description || exp.details) && (
+        {isActive && (description || details) && (
           <motion.div
             initial={{ opacity: 0, height: 0, marginTop: 0 }}
             animate={{
@@ -410,18 +438,17 @@ function ItemCard({ exp, isActive }: { exp: any; isActive: boolean }) {
             }}
             exit={{ opacity: 0, height: 0, marginTop: 0 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-y-auto max-h-[200px] md:max-h-[160px]"
           >
-            {exp.description && (
+            {description && (
               <p className="text-sm text-[#55555a] dark:text-[#e5e5ea] font-light leading-relaxed mb-4">
-                {exp.description}
+                {description}
               </p>
             )}
-            {exp.details && (
+            {details && (
               <>
                 <div className="h-[1px] w-full bg-black/10 dark:bg-white/10 mb-4" />
                 <p className="text-sm text-[#1d1d1f] dark:text-[#f5f5f7] font-light leading-relaxed">
-                  {exp.details}
+                  {details}
                 </p>
               </>
             )}

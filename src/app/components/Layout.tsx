@@ -5,13 +5,17 @@ import { Menu, X, Moon, Sun } from 'lucide-react';
 import logoImg from '../../assets/RS_Logo.png';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { CustomCursor } from './CustomCursor';
+import LineWaves from './LineWaves';
+import { translations } from '../translations';
+import { useLanguage } from '../context/LanguageContext';
 
 export function Layout() {
+  const { lang, setLang } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isDark, setIsDark] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('theme') === 'dark' || 
+      return localStorage.getItem('theme') === 'dark' ||
         (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
     }
     return false;
@@ -29,6 +33,7 @@ export function Layout() {
   }, [isDark]);
 
   const toggleTheme = () => setIsDark(!isDark);
+  const toggleLang = () => setLang(lang === 'de' ? 'en' : 'de');
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -45,10 +50,10 @@ export function Layout() {
   }, []);
 
   const navLinks = [
-    { name: 'Ich', path: '/' },
-    { name: 'Projekte', path: '/projects' },
-    { name: 'Werdegang', path: '/experience' },
-    { name: 'Kontakt', path: '/contact' }
+    { name: translations[lang].nav.ich, path: '/' },
+    { name: translations[lang].nav.projekte, path: '/projects' },
+    { name: translations[lang].nav.werdegang, path: '/experience' },
+    { name: translations[lang].nav.kontakt, path: '/contact' }
   ];
 
   // SF Pro and fallback apple system fonts for minimal look
@@ -59,37 +64,55 @@ export function Layout() {
   };
 
   return (
-    <div 
-      className="min-h-screen bg-[#fafafa] dark:bg-[#111111] text-[#1d1d1f] dark:text-[#f5f5f7] flex flex-col relative overflow-x-hidden selection:bg-black/10 dark:selection:bg-white/10 selection:text-black dark:selection:text-white transition-colors duration-500 cursor-none"
+    <div
+      className="min-h-screen bg-white dark:bg-black text-[#1d1d1f] dark:text-[#f5f5f7] flex flex-col relative overflow-x-hidden selection:bg-black/10 dark:selection:bg-white/10 selection:text-black dark:selection:text-white transition-colors duration-500 cursor-none"
       style={minimalFontStyle}
     >
       {/* Custom Cursor */}
       <CustomCursor isDark={isDark} />
 
       {/* Global subtle ambient background */}
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-[0.9] dark:opacity-[0.4] overflow-hidden">
-        
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-[0.6] dark:opacity-[0.3] overflow-hidden">
+
         {/* The static base color blobs using massive radial gradients to prevent hard clipping edges */}
         <div className="absolute inset-0 mix-blend-multiply dark:mix-blend-normal opacity-100 transition-opacity duration-500">
-          <div className="absolute -top-[20%] -left-[10%] w-[80vw] h-[80vw] bg-[radial-gradient(circle,_rgba(181,198,224,0.4)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle,_rgba(181,198,224,0.3)_0%,_transparent_60%)]" />
-          <div className="absolute top-[-5%] -right-[15%] w-[70vw] h-[70vw] bg-[radial-gradient(circle,_rgba(242,201,216,0.4)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle,_rgba(242,201,216,0.3)_0%,_transparent_60%)]" />
-          <div className="absolute -bottom-[20%] -right-[10%] w-[80vw] h-[80vw] bg-[radial-gradient(circle,_rgba(211,182,249,0.3)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle,_rgba(211,182,249,0.25)_0%,_transparent_60%)]" />
-          <div className="absolute -bottom-[10%] -left-[20%] w-[90vw] h-[90vw] bg-[radial-gradient(circle,_rgba(251,231,198,0.4)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle,_rgba(251,231,198,0.3)_0%,_transparent_60%)]" />
-          <div className="absolute top-[30%] left-[20%] w-[60vw] h-[60vw] bg-[radial-gradient(circle,_rgba(199,235,209,0.3)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle,_rgba(199,235,209,0.25)_0%,_transparent_60%)]" />
-          
+          <div className="absolute -top-[20%] -left-[10%] w-[80vw] h-[80vw] bg-[radial-gradient(circle,_rgba(181,198,224,0.25)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle,_rgba(181,198,224,0.2)_0%,_transparent_60%)]" />
+          <div className="absolute top-[-5%] -right-[15%] w-[70vw] h-[70vw] bg-[radial-gradient(circle,_rgba(242,201,216,0.25)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle,_rgba(242,201,216,0.2)_0%,_transparent_60%)]" />
+          <div className="absolute -bottom-[20%] -right-[10%] w-[80vw] h-[80vw] bg-[radial-gradient(circle,_rgba(211,182,249,0.2)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle,_rgba(211,182,249,0.15)_0%,_transparent_60%)]" />
+          <div className="absolute -bottom-[10%] -left-[20%] w-[90vw] h-[90vw] bg-[radial-gradient(circle,_rgba(251,231,198,0.25)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle,_rgba(251,231,198,0.2)_0%,_transparent_60%)]" />
+          <div className="absolute top-[30%] left-[20%] w-[60vw] h-[60vw] bg-[radial-gradient(circle,_rgba(199,235,209,0.2)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle,_rgba(199,235,209,0.15)_0%,_transparent_60%)]" />
+
           {/* Zusätzliche Farbflecken für mehr Tiefe und Farbe */}
-          <div className="absolute top-[40%] -right-[10%] w-[65vw] h-[65vw] bg-[radial-gradient(circle,_rgba(255,214,186,0.3)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle,_rgba(255,214,186,0.25)_0%,_transparent_60%)]" />
-          <div className="absolute top-[10%] left-[40%] w-[75vw] h-[75vw] bg-[radial-gradient(circle,_rgba(216,242,255,0.35)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle,_rgba(216,242,255,0.3)_0%,_transparent_60%)]" />
-          <div className="absolute bottom-[20%] left-[30%] w-[70vw] h-[70vw] bg-[radial-gradient(circle,_rgba(255,225,240,0.3)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle,_rgba(255,225,240,0.25)_0%,_transparent_60%)]" />
-          <div className="absolute -bottom-[30%] left-[10%] w-[85vw] h-[85vw] bg-[radial-gradient(circle,_rgba(198,245,235,0.3)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle,_rgba(198,245,235,0.25)_0%,_transparent_60%)]" />
-          <div className="absolute top-[60%] right-[30%] w-[55vw] h-[55vw] bg-[radial-gradient(circle,_rgba(235,215,255,0.3)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle,_rgba(235,215,255,0.25)_0%,_transparent_60%)]" />
+          <div className="absolute top-[40%] -right-[10%] w-[65vw] h-[65vw] bg-[radial-gradient(circle,_rgba(255,214,186,0.2)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle,_rgba(255,214,186,0.15)_0%,_transparent_60%)]" />
+          <div className="absolute top-[10%] left-[40%] w-[75vw] h-[75vw] bg-[radial-gradient(circle,_rgba(216,242,255,0.25)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle,_rgba(216,242,255,0.2)_0%,_transparent_60%)]" />
+          <div className="absolute bottom-[20%] left-[30%] w-[70vw] h-[70vw] bg-[radial-gradient(circle,_rgba(255,225,240,0.2)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle,_rgba(255,225,240,0.15)_0%,_transparent_60%)]" />
+          <div className="absolute -bottom-[30%] left-[10%] w-[85vw] h-[85vw] bg-[radial-gradient(circle,_rgba(198,245,235,0.2)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle,_rgba(198,245,235,0.15)_0%,_transparent_60%)]" />
+          <div className="absolute top-[60%] right-[30%] w-[55vw] h-[55vw] bg-[radial-gradient(circle,_rgba(235,215,255,0.2)_0%,_transparent_60%)] dark:bg-[radial-gradient(circle,_rgba(235,215,255,0.15)_0%,_transparent_60%)]" />
         </div>
       </div>
 
-      <header 
-        className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-          scrolled ? 'bg-[#fafafa]/70 dark:bg-[#111111]/70 backdrop-blur-xl border-b border-black/5 dark:border-white/5 py-3' : 'bg-transparent py-6'
-        }`}
+      {/* LineWaves background effect - visible behind header and footer */}
+      <div className="fixed inset-0 z-[1] pointer-events-none">
+        <LineWaves
+          speed={0.1}
+          innerLineCount={32.0}
+          outerLineCount={36.0}
+          warpIntensity={1.0}
+          rotation={-45}
+          edgeFadeWidth={0.1}
+          colorCycleSpeed={0.3}
+          brightness={0.08}
+          color1="#ffffff"
+          color2="#e0e0e0"
+          color3="#d0d0d0"
+          enableMouseInteraction={true}
+          mouseInfluence={0.5}
+          containerClassName="pointer-events-none"
+        />
+      </div>
+
+      <header
+        className="fixed top-0 w-full z-[100] py-6 bg-white/30 dark:bg-black/30 backdrop-blur-md"
       >
         <div className="max-w-6xl mx-auto px-6 md:px-12 flex justify-between items-center">
           <NavLink to="/" className="hover:opacity-70 transition-opacity">
@@ -102,6 +125,7 @@ export function Layout() {
               <NavLink
                 key={link.name}
                 to={link.path}
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 className={({ isActive }) =>
                   `text-sm font-medium transition-all duration-300 relative ${
                     isActive ? 'text-black dark:text-white' : 'text-[#55555a] hover:text-black dark:hover:text-white'
@@ -123,12 +147,19 @@ export function Layout() {
               </NavLink>
             ))}
             
-            <button 
-              onClick={toggleTheme} 
+            <button
+              onClick={toggleTheme}
               className="p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-[#55555a] hover:text-black dark:hover:text-white"
               aria-label="Toggle dark mode"
             >
               {isDark ? <Sun size={18} strokeWidth={1.5} /> : <Moon size={18} strokeWidth={1.5} />}
+            </button>
+            <button
+              onClick={toggleLang}
+              className="px-3 py-1.5 rounded-full border border-black/10 dark:border-white/10 text-xs font-medium transition-colors text-[#55555a] hover:text-black dark:hover:text-white"
+              aria-label="Toggle language"
+            >
+              {lang === 'de' ? 'DE' : 'EN'}
             </button>
           </nav>
 
@@ -168,7 +199,10 @@ export function Layout() {
                     <NavLink
                       key={link.name}
                       to={link.path}
-                      onClick={() => setIsMenuOpen(false)}
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
                       className={({ isActive }) =>
                         `text-2xl font-semibold tracking-tight transition-all duration-300 ${
                           isActive ? 'text-black dark:text-white scale-105' : 'text-[#86868b] dark:text-[#86868b] hover:text-black dark:hover:text-white'
@@ -178,6 +212,15 @@ export function Layout() {
                       {link.name}
                     </NavLink>
                   ))}
+                  <button
+                    onClick={() => {
+                      toggleLang();
+                      setIsMenuOpen(false);
+                    }}
+                    className="px-4 py-2 rounded-full border border-black/10 dark:border-white/10 text-sm font-medium transition-colors text-[#55555a] dark:text-[#e5e5ea]"
+                  >
+                    {lang === 'de' ? 'DE → EN' : 'EN → DE'}
+                  </button>
                 </div>
               </motion.div>
             </>
@@ -199,10 +242,10 @@ export function Layout() {
         </AnimatePresence>
       </main>
 
-      <footer className="relative z-10 py-12 text-center mt-20 flex flex-col items-center justify-center space-y-6">
+      <footer className="relative z-[10] py-12 text-center mt-20 flex flex-col items-center justify-center space-y-6 bg-white/20 dark:bg-black/20 backdrop-blur-md">
         <ImageWithFallback src={logoImg} alt="Raphi Logo" className="h-10 w-auto dark:invert opacity-60 hover:opacity-100 transition-opacity" />
         <p className="text-xs text-[#55555a] dark:text-[#e5e5ea] font-medium">
-          © {new Date().getFullYear()} Raphaël Seiler. UX Designer.
+          © {new Date().getFullYear()} {translations[lang].footer.copyright}
         </p>
       </footer>
     </div>

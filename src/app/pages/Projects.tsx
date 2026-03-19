@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { projects } from '../data';
-import LightRays from '../components/LightRays';
+import { translations } from '../translations';
+import { useLanguage } from '../context/LanguageContext';
 
 type Category = 'alle' | 'real' | 'studium';
 
@@ -13,28 +14,22 @@ const categoryLabels: Record<Category, string> = {
 
 export function Projects() {
   const [activeCategory, setActiveCategory] = useState<Category>('alle');
+  const { lang } = useLanguage();
+
+  const t = translations[lang];
+
+  const categoryLabelsTranslations: Record<Category, string> = {
+    alle: t.projects.Alle,
+    real: t.projects.Real,
+    studium: t.projects.Studium,
+  };
 
   const filteredProjects = activeCategory === 'alle'
     ? projects
     : projects.filter(p => p.category === activeCategory);
 
   return (
-    <div className="w-full pb-32 relative">
-      <LightRays
-        raysOrigin='top-center'
-        raysColor='#ffaa00'
-        raysSpeed={1}
-        lightSpread={1.6}
-        rayLength={3}
-        followMouse={true}
-        mouseInfluence={0.2}
-        noiseAmount={0}
-        distortion={0}
-        pulsating={false}
-        fadeDistance={0.5}
-        saturation={0.8}
-        className="absolute inset-0 z-0"
-      />
+    <div className="w-full pb-32">
       <div className="max-w-6xl mx-auto px-6 md:px-12 relative z-10">
 
         <div className="pt-20 pb-16">
@@ -44,7 +39,7 @@ export function Projects() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="text-5xl md:text-7xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] mb-6"
           >
-            Projekte.
+            {t.projects.title}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0 }}
@@ -52,7 +47,7 @@ export function Projects() {
             transition={{ delay: 0.2, duration: 0.8 }}
             className="text-xl text-[#55555a] dark:text-[#e5e5ea] max-w-2xl font-light"
           >
-            Fallstudien, UI-Konzepte und interaktive Prototypen.
+            {t.projects.description}
           </motion.p>
         </div>
 
@@ -63,7 +58,7 @@ export function Projects() {
           transition={{ delay: 0.3, duration: 0.6 }}
           className="flex gap-3 mb-16"
         >
-          {(Object.keys(categoryLabels) as Category[]).map((cat) => (
+          {(Object.keys(categoryLabelsTranslations) as Category[]).map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
@@ -73,7 +68,7 @@ export function Projects() {
                   : 'bg-transparent text-[#55555a] dark:text-[#e5e5ea] border-black/10 dark:border-white/15 hover:border-black/30 dark:hover:border-white/30'
               }`}
             >
-              {categoryLabels[cat]}
+              {categoryLabelsTranslations[cat]}
             </button>
           ))}
         </motion.div>
@@ -107,7 +102,7 @@ export function Projects() {
                   />
                 </div>
 
-                <div className="flex flex-col gap-3 relative z-10 dark:bg-[#111111]/40 dark:backdrop-blur-md dark:p-4 dark:-m-4 dark:rounded-xl">
+                <div className="flex flex-col gap-3 relative z-10 dark:bg-[#111111]/80 dark:backdrop-blur-md dark:p-4 dark:-m-4 dark:rounded-xl">
                   <div className="flex items-center gap-3">
                     <h3 className="text-xl font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">{project.title}</h3>
                     <span className={`text-[10px] font-medium px-2.5 py-0.5 rounded-full ${

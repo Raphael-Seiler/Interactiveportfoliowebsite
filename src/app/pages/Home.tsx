@@ -2,23 +2,88 @@ import React, { useState } from "react";
 import { motion } from "motion/react";
 import { Link } from "react-router";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-import {
-  Zap,
-  Target,
-  Coffee,
-  Car,
-  Fish,
-  Users,
-} from "lucide-react";
+import MagicBento from "../components/MagicBento";
+import CircularGallery from "../components/CircularGallery";
+import { translations } from "../translations";
+import { useLanguage } from "../context/LanguageContext";
+// SF Symbols style icons
+const LightbulbIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/>
+    <path d="M9 21h6"/>
+    <path d="M10 17l2 2 2-2"/>
+  </svg>
+);
+
+const ZapIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+  </svg>
+);
+
+const TargetIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <circle cx="12" cy="12" r="6"/>
+    <circle cx="12" cy="12" r="2"/>
+  </svg>
+);
+
+const CoffeeIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17 8h1a4 4 0 1 1 0 8h-1"/>
+    <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/>
+    <line x1="6" x2="6" y1="1" y2="4"/>
+    <line x1="10" x2="10" y1="1" y2="4"/>
+    <line x1="14" x2="14" y1="1" y2="4"/>
+  </svg>
+);
 import imgDefault from "../../assets/Portrait_Prof.png";
 import imgHover from "../../assets/Portrait_Chill.png";
 
 export function Home() {
   const [showAlt, setShowAlt] = useState(false);
+  const { lang } = useLanguage();
+
+  const t = translations[lang];
 
   return (
     <div className="w-full max-w-6xl mx-auto px-6 md:px-12 pb-32">
-      {/* Hero Section */}
+      {/* Circular Gallery - Featured Projects - Full Width */}
+      <div className="relative w-full h-[600px] md:h-[700px] overflow-hidden -mx-6 md:-mx-12 mb-20 md:mb-0">
+        <CircularGallery
+          items={[
+            { image: 'https://images.unsplash.com/photo-1750056393326-8feed2a1c34f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwbW9iaWxlJTIwYXBwJTIwdWklMjBtb2NrdXB8ZW58MXx8fHwxNzcyNzE5NDkxfDA&ixlib=rb-4.1.0&q=80&w=1080', text: 'Fintech App' },
+            { image: 'https://images.unsplash.com/photo-1649442279006-8bccb4cc63e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjbGVhbiUyMHdlYnNpdGUlMjBkYXNoYm9hcmQlMjB1aSUyMGRlc2lnbnxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080', text: 'Dashboard' },
+            { image: 'https://images.unsplash.com/photo-1761122827167-159d1d272313?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3aXJlZnJhbWUlMjBza2V0Y2glMjB1eCUyMGRlc2lnbnxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080', text: 'Wireframes' },
+            { image: 'https://images.unsplash.com/photo-1551651061-a9f70670893a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2JpbGUlMjB1aXxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080', text: 'Mobile UI' },
+            { image: 'https://images.unsplash.com/photo-1586717791821-0c862716d8b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1eCUyMGRlc2lnbnxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080', text: 'UX Research' },
+            { image: 'https://images.unsplash.com/photo-1581299970385-123f894d8a95?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1aSUyMGRlc2lnbnxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080', text: 'Interface' },
+          ]}
+          textColor="#1d1d1f"
+        />
+        <div className="absolute bottom-4 left-0 right-0 z-20 pointer-events-none flex justify-center w-full">
+          <div className="text-center">
+            <motion.span
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-[#55555a] dark:text-[#e5e5ea] font-medium tracking-widest uppercase block text-sm mb-2"
+            >
+              {t.home.featuredProjects}
+            </motion.span>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="text-3xl md:text-4xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7]"
+            >
+              {t.home.highlights}
+            </motion.h2>
+          </div>
+        </div>
+      </div>
+
       <section className="relative min-h-[70vh] flex flex-col md:flex-row items-center justify-between pt-10 pb-20 overflow-hidden gap-16">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -29,20 +94,15 @@ export function Home() {
           }}
           className="max-w-2xl flex-1 z-10"
         >
-          <span className="text-[#55555a] dark:text-[#e5e5ea] font-medium tracking-widest uppercase mb-4 block text-sm">
-            Ich.
-          </span>
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tighter text-[#1d1d1f] dark:text-[#f5f5f7] mb-8 leading-[1.05] drop-shadow-sm dark:drop-shadow-md">
-            Hallo, ich bin
+            {t.home.hello}
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1d1d1f] to-[#55555a] dark:from-[#f5f5f7] dark:to-[#d1d1d6]">
-              Raphi.
+              {t.home.name}
             </span>
           </h1>
           <p className="text-xl md:text-2xl text-[#55555a] dark:text-[#e5e5ea] max-w-xl leading-relaxed font-light">
-            Ein angehender UX-Designer mit dem Ziel, komplexe
-            Probleme durch empathisches und minimalistisches
-            Design zu lösen.
+            {t.home.description}
           </p>
         </motion.div>
 
@@ -84,147 +144,67 @@ export function Home() {
         </motion.div>
       </section>
 
-      {/* Bento Grid: Über Mich */}
-      <section className="py-20 relative">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(200px,auto)] relative z-10">
-          {/* Main About Text */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="md:col-span-2 bg-transparent rounded-[2rem] p-8 md:p-12 border border-black/10 dark:border-white/10 dark:bg-[#111111]/60 dark:backdrop-blur-xl"
-          >
-            <h2 className="text-2xl font-semibold mb-6 text-[#1d1d1f] dark:text-[#f5f5f7] flex items-center gap-3">
-              <span className="w-6 h-6 text-[#55555a] dark:text-[#e5e5ea]">
-                💡
-              </span>
-              Meine Philosophie
-            </h2>
-            <p className="text-[#55555a] dark:text-[#e5e5ea] leading-relaxed font-light text-lg">
-              Meine Arbeit soll etwas Positives in der Welt
-              bewegen. Mich fasziniert es, komplizierte Probleme
-              anzupacken und einfache, gute Lösungen dafür zu
-              finden. Dabei ist es mir besonders wichtig, dass
-              meine Designs für alle Menschen leicht
-              verständlich und ohne Hürden nutzbar sind. Denn
-              gutes Design sollte niemanden ausschliessen,
-              sondern den Alltag für jeden ein bisschen besser
-              machen.
-            </p>
-          </motion.div>
-
-          {/* Stärken */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="bg-transparent rounded-[2rem] p-8 border border-black/10 dark:border-white/10 flex flex-col dark:bg-[#111111]/60 dark:backdrop-blur-xl"
-          >
-            <h3 className="text-lg font-semibold mb-4 text-[#1d1d1f] dark:text-[#f5f5f7] flex items-center gap-2">
-              <Zap className="w-5 h-5 text-[#1d1d1f] dark:text-[#f5f5f7]" />
-              Stärken
-            </h3>
-            <ul className="space-y-3 text-[#55555a] dark:text-[#e5e5ea] font-light">
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#1d1d1f] dark:bg-[#f5f5f7] mt-2 flex-shrink-0" />
-                <span>Prototyping & Iteration</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#1d1d1f] dark:bg-[#f5f5f7] mt-2 flex-shrink-0" />
-                <span>Gutes Nutzerverständnis (Empathie)</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#1d1d1f] dark:bg-[#f5f5f7] mt-2 flex-shrink-0" />
-                <span>Analytisches Denken</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#1d1d1f] dark:bg-[#f5f5f7] mt-2 flex-shrink-0" />
-                <span>Neugierig</span>
-              </li>
-            </ul>
-          </motion.div>
-
-          {/* Schwächen */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="bg-transparent rounded-[2rem] p-8 border border-black/10 dark:border-white/10 dark:bg-[#111111]/60 dark:backdrop-blur-xl"
-          >
-            <h3 className="text-lg font-semibold mb-4 text-[#1d1d1f] dark:text-[#f5f5f7] flex items-center gap-2">
-              <Target className="w-5 h-5 text-[#1d1d1f] dark:text-[#f5f5f7]" />
-              Entwicklungspotenzial
-            </h3>
-            <ul className="space-y-3 text-[#55555a] dark:text-[#e5e5ea] font-light">
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#1d1d1f] dark:bg-[#f5f5f7] mt-2 flex-shrink-0" />
-                <span>Erfahrung</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#1d1d1f] dark:bg-[#f5f5f7] mt-2 flex-shrink-0" />
-                <span>Perfektionismus</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#1d1d1f] dark:bg-[#f5f5f7] mt-2 flex-shrink-0" />
-                <span>Coding</span>
-              </li>
-            </ul>
-          </motion.div>
-
-          {/* Hobbies */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-            className="md:col-span-2 bg-transparent rounded-[2rem] p-8 border border-black/10 dark:border-white/10 flex flex-col justify-center dark:bg-[#111111]/60 dark:backdrop-blur-xl"
-          >
-            <h3 className="text-lg font-semibold mb-6 text-[#1d1d1f] dark:text-[#f5f5f7] flex items-center gap-2">
-              <Coffee className="w-5 h-5 text-[#1d1d1f] dark:text-[#f5f5f7]" />
-              Wenn ich nicht designe...
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                {
-                  icon: (
-                    <Car className="w-6 h-6 mb-2 text-[#1d1d1f] dark:text-[#f5f5f7]" />
-                  ),
-                  label: "Auto-Fanatiker",
-                },
-                {
-                  icon: (
-                    <Fish className="w-6 h-6 mb-2 text-[#1d1d1f] dark:text-[#f5f5f7]" />
-                  ),
-                  label: "Fischer",
-                },
-                {
-                  icon: (
-                    <Coffee className="w-6 h-6 mb-2 text-[#1d1d1f] dark:text-[#f5f5f7]" />
-                  ),
-                  label: "Kaffee-Geniesser",
-                },
-                {
-                  icon: (
-                    <Users className="w-6 h-6 mb-2 text-[#1d1d1f] dark:text-[#f5f5f7]" />
-                  ),
-                  label: "Familie & Freunde",
-                },
-              ].map((hobby, i) => (
-                <div
-                  key={i}
-                  className="bg-transparent border border-black/5 dark:border-white/10 rounded-2xl p-4 flex flex-col items-center justify-center text-center hover:border-black/20 dark:hover:border-white/30 transition-colors"
-                >
-                  {hobby.icon}
-                  <span className="text-sm font-medium text-[#55555a] dark:text-[#e5e5ea]">
-                    {hobby.label}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
+      {/* Bento Grid: About Me */}
+      <section className="py-20 relative z-10">
+        <MagicBento
+          cards={[
+            {
+              label: t.home.philosophie,
+              title: t.home.meinePhilosophie,
+              description: t.home.philosophieText,
+              className: "card-span-2-md",
+              icon: <LightbulbIcon />
+            },
+            {
+              label: t.home.staerken,
+              title: t.home.staerken,
+              description: (
+                <ul className="list-disc list-inside space-y-1 text-left">
+                  {t.home.staerkenList.map((item, i) => (
+                    <li key={i}>{item}</li>
+                  ))}
+                </ul>
+              ),
+              icon: <ZapIcon />
+            },
+            {
+              label: t.home.entwicklung,
+              title: t.home.entwicklung,
+              description: (
+                <ul className="list-disc list-inside space-y-1 text-left">
+                  {t.home.entwicklungList.map((item, i) => (
+                    <li key={i}>{item}</li>
+                  ))}
+                </ul>
+              ),
+              icon: <TargetIcon />
+            },
+            {
+              label: t.home.hobbies,
+              title: t.home.wennIchNichtDesigne,
+              description: (
+                <ul className="list-disc list-inside space-y-1 text-left">
+                  {t.home.hobbiesList.map((item, i) => (
+                    <li key={i}>{item}</li>
+                  ))}
+                </ul>
+              ),
+              className: "card-col-span-2-md",
+              icon: <CoffeeIcon />
+            }
+          ]}
+          textAutoHide={true}
+          enableStars
+          enableSpotlight
+          enableBorderGlow={true}
+          enableTilt
+          enableMagnetism={false}
+          clickEffect
+          spotlightRadius={290}
+          particleCount={12}
+          glowColor="0, 150, 255"
+          disableAnimations={false}
+        />
       </section>
 
       {/* Project Collage Section */}
@@ -232,17 +212,17 @@ export function Home() {
         <div className="flex justify-between items-end mb-12">
           <div>
             <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] mb-3">
-              Kleine Projekt-Kollage
+              {t.home.projektKollage}
             </h2>
             <p className="text-[#55555a] dark:text-[#e5e5ea] font-light">
-              Ein visueller Vorgeschmack auf meine Arbeiten.
+              {t.home.visuellerVorgeschmack}
             </p>
           </div>
           <Link
             to="/projects"
             className="hidden md:inline-flex items-center space-x-2 text-sm font-medium border-b border-black/20 dark:border-white/20 pb-1 hover:border-black dark:hover:border-white transition-colors text-[#1d1d1f] dark:text-[#f5f5f7]"
           >
-            <span>Alle Projekte</span>
+            <span>{t.home.alleProjekte}</span>
             <span>&rarr;</span>
           </Link>
         </div>
@@ -314,7 +294,7 @@ export function Home() {
             to="/projects"
             className="inline-flex items-center space-x-2 text-sm font-medium border-b border-black/20 dark:border-white/20 pb-1 hover:border-black dark:hover:border-white transition-colors text-[#1d1d1f] dark:text-[#f5f5f7]"
           >
-            <span>Alle Projekte entdecken</span>
+            <span>{t.home.alleProjekteEntdecken}</span>
             <span>&rarr;</span>
           </Link>
         </div>
