@@ -440,13 +440,17 @@ class App {
     this.createGeometry();
     this.createMedias(items, bend, textColor, borderRadius, font);
 
-    // Center gallery - start at the middle item
+    // Center gallery - position the middle items at viewport center
     if (this.medias.length > 0) {
-      const middleIndex = Math.floor(this.mediasImages.length / 2);
+      const originalCount = this.mediasImages.length / 2;
       const width = this.medias[0].width;
-      this.scroll.current = width * middleIndex;
-      this.scroll.target = width * middleIndex;
-      this.scroll.last = width * middleIndex;
+      // Center between the two middle items: for 6 items, center between items 2 and 3
+      // Items are at positions: 0, width, 2*width, 3*width, ...
+      // To center gap between items (n/2 - 1) and (n/2): scroll = width * (n/2 - 0.5)
+      const centerOffset = width * (originalCount / 2 - 0.5);
+      this.scroll.current = centerOffset;
+      this.scroll.target = centerOffset;
+      this.scroll.last = centerOffset;
     }
 
     this.update();
@@ -461,7 +465,11 @@ class App {
     });
     this.gl = this.renderer.gl;
     this.gl.clearColor(0, 0, 0, 0);
-    this.container.appendChild(this.renderer.gl.canvas as HTMLCanvasElement);
+    const canvas = this.renderer.gl.canvas as HTMLCanvasElement;
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.style.display = 'block';
+    this.container.appendChild(canvas);
   }
 
   createCamera() {
@@ -708,5 +716,10 @@ export default function CircularGallery({
     };
   }, [items, bend, textColor, textColorDark, borderRadius, font, scrollSpeed, scrollEase]);
 
-  return <div className="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing" ref={containerRef} />;
+  return (
+    <div
+      className="relative w-full h-full overflow-hidden cursor-grab active:cursor-grabbing"
+      ref={containerRef}
+    />
+  );
 }

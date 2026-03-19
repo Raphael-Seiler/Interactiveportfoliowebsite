@@ -60,7 +60,7 @@ export function Home() {
   return (
     <div className="w-full max-w-6xl mx-auto px-6 md:px-12 pb-32">
       {/* Circular Gallery - Featured Projects - Full Width */}
-      <div className="relative w-full h-[600px] md:h-[700px] overflow-hidden -mx-6 md:-mx-12 mb-20 md:mb-0">
+      <div className="relative w-full h-[600px] md:h-[700px] overflow-hidden mb-20 md:mb-0">
         <CircularGallery
           items={galleryItems}
           textColor="#1d1d1f"
