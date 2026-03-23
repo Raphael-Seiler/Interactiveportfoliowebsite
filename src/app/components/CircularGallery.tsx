@@ -121,8 +121,13 @@ class Title {
     const aspect = width / height;
     const textHeightScaled = this.plane.scale.y * 0.15;
     const textWidthScaled = textHeightScaled * aspect;
-    this.mesh.scale.set(textWidthScaled, textHeightScaled, 1);
-    this.mesh.position.y = -this.plane.scale.y * 0.5 - textHeightScaled * 0.5 - 0.05;
+    // Title size scales with circle/image size
+    const titleHeight = this.plane.scale.y * 0.12;
+    const titleWidth = titleHeight * aspect;
+    this.mesh.scale.set(titleWidth, titleHeight, 1);
+    // Position title at edge of circle with small fixed gap
+    const gap = 0.02;
+    this.mesh.position.y = -this.plane.scale.y * 0.5 - titleHeight * 0.5 - gap;
     this.mesh.setParent(this.plane);
   }
 }
@@ -412,6 +417,8 @@ class App {
 
   isDown: boolean = false;
   start: number = 0;
+  startY: number = 0;
+  isHorizontalScroll: boolean = false;
   autoScroll: boolean = true;
   autoScrollSpeed: number = 0.02;
   userInteractionTimeout: number = 0;
@@ -537,19 +544,35 @@ class App {
     this.autoScroll = false;
     this.scroll.position = this.scroll.current;
     this.start = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    this.startY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    this.isHorizontalScroll = false;
     this.resetAutoScrollTimeout();
   }
 
   onTouchMove(e: MouseEvent | TouchEvent) {
     if (!this.isDown) return;
     const x = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const distance = (this.start - x) * (this.scrollSpeed * 0.025);
-    this.scroll.target = (this.scroll.position ?? 0) + distance;
+    const y = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    const deltaX = this.start - x;
+    const deltaY = this.startY - y;
+
+    // Determine scroll direction on first significant movement
+    if (!this.isHorizontalScroll && (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5)) {
+      this.isHorizontalScroll = Math.abs(deltaX) > Math.abs(deltaY);
+    }
+
+    // Only scroll gallery if moving horizontally
+    if (this.isHorizontalScroll) {
+      e.preventDefault();
+      const distance = deltaX * (this.scrollSpeed * 0.025);
+      this.scroll.target = (this.scroll.position ?? 0) + distance;
+    }
     this.resetAutoScrollTimeout();
   }
 
   onTouchUp() {
     this.isDown = false;
+    this.isHorizontalScroll = false;
     this.onCheck();
     this.resetAutoScrollTimeout();
   }
@@ -627,9 +650,9 @@ class App {
     window.addEventListener('mousedown', this.boundOnTouchDown);
     window.addEventListener('mousemove', this.boundOnTouchMove);
     window.addEventListener('mouseup', this.boundOnTouchUp);
-    window.addEventListener('touchstart', this.boundOnTouchDown);
-    window.addEventListener('touchmove', this.boundOnTouchMove);
-    window.addEventListener('touchend', this.boundOnTouchUp);
+    window.addEventListener('touchstart', this.boundOnTouchDown, { passive: true });
+    window.addEventListener('touchmove', this.boundOnTouchMove, { passive: false });
+    window.addEventListener('touchend', this.boundOnTouchUp, { passive: true });
   }
 
   destroy() {
@@ -718,7 +741,7 @@ export default function CircularGallery({
 
   return (
     <div
-      className="relative w-full h-full overflow-hidden cursor-grab active:cursor-grabbing"
+      className="relative w-full h-full overflow-hidden cursor-none touch-pan-y"
       ref={containerRef}
     />
   );

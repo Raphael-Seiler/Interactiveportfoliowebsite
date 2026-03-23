@@ -7,7 +7,7 @@ export const translations = {
       kontakt: 'Kontakt',
     },
     home: {
-      featuredProjects: 'Featured Projects.',
+      featuredProjects: 'Ausgewählte Projekte.',
       highlights: 'Highlights aus meiner Arbeit.',
       hello: 'Hallo, ich bin',
       name: 'Raphi.',
@@ -50,6 +50,7 @@ export const translations = {
       Alle: 'Alle',
       Real: 'Reale Projekte',
       Studium: 'Studium',
+      viewDetails: 'Details ansehen',
     },
     experience: {
       title: 'Werdegang.',
@@ -124,6 +125,7 @@ export const translations = {
       Alle: 'All',
       Real: 'Real Projects',
       Studium: 'Academic',
+      viewDetails: 'View Details',
     },
     experience: {
       title: 'Experience.',

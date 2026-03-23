@@ -38,11 +38,11 @@ const CoffeeIcon = () => (
     <line x1="14" x2="14" y1="1" y2="4"/>
   </svg>
 );
-import imgDefault from "../../assets/Portrait_Prof.png";
-import imgHover from "../../assets/Portrait_Chill.png";
+import imgDefault from "../../assets/Raphi_Mii_4K.png";
+import imgHover from "../../assets/Raphi_Mii_4K_pose.png";
 
 export function Home() {
-  const [showAlt, setShowAlt] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
   const { lang } = useLanguage();
 
   const t = translations[lang];
@@ -60,7 +60,7 @@ export function Home() {
   return (
     <div className="w-full max-w-6xl mx-auto px-6 md:px-12 pb-32">
       {/* Circular Gallery - Featured Projects - Full Width */}
-      <div className="relative w-full h-[600px] md:h-[700px] overflow-hidden mb-20 md:mb-0">
+      <div className="relative w-full h-[600px] md:h-[700px] overflow-hidden mb-20 md:mb-0 pt-48">
         <CircularGallery
           items={galleryItems}
           textColor="#1d1d1f"
@@ -125,23 +125,22 @@ export function Home() {
             delay: 0.2,
             ease: "easeOut",
           }}
-          className="flex-1 w-full max-w-md relative z-10"
+          className="flex-1 w-full max-w-4xl relative z-10"
         >
           <div
-            className="aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-transparent border border-black/10 dark:border-white/10 relative cursor-pointer select-none"
-            onMouseEnter={() => setShowAlt(true)}
-            onMouseLeave={() => setShowAlt(false)}
-            onClick={() => setShowAlt((prev) => !prev)}
+            className="aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-transparent relative select-none"
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
           >
             <img
               src={imgDefault}
-              alt="Raphi - Portrait"
-              className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500 ${showAlt ? "opacity-0" : "opacity-100"}`}
+              alt="Raphi Mii"
+              className={`absolute inset-0 w-full h-full object-contain object-center transition-opacity duration-300 ${isHovering ? "opacity-0" : "opacity-100"}`}
             />
             <img
               src={imgHover}
-              alt="Raphi - Casual"
-              className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500 ${showAlt ? "opacity-100" : "opacity-0"}`}
+              alt="Raphi Mii Pose"
+              className={`absolute inset-0 w-full h-full object-contain object-center transition-opacity duration-300 ${isHovering ? "opacity-100" : "opacity-0"}`}
             />
           </div>
         </motion.div>
@@ -223,7 +222,7 @@ export function Home() {
           </div>
           <Link
             to="/projects"
-            className="hidden md:inline-flex items-center space-x-2 text-sm font-medium border-b border-black/20 dark:border-white/20 pb-1 hover:border-black dark:hover:border-white transition-colors text-[#1d1d1f] dark:text-[#f5f5f7]"
+            className="hidden md:inline-flex items-center space-x-2 text-sm font-medium border-b border-black/20 dark:border-white/20 pb-1 hover:border-black dark:hover:border-white transition-colors text-[#1d1d1f] dark:text-[#f5f5f7] cursor-none"
           >
             <span>{t.home.alleProjekte}</span>
             <span>&rarr;</span>
@@ -295,7 +294,7 @@ export function Home() {
         <div className="mt-8 text-center md:hidden">
           <Link
             to="/projects"
-            className="inline-flex items-center space-x-2 text-sm font-medium border-b border-black/20 dark:border-white/20 pb-1 hover:border-black dark:hover:border-white transition-colors text-[#1d1d1f] dark:text-[#f5f5f7]"
+            className="inline-flex items-center space-x-2 text-sm font-medium border-b border-black/20 dark:border-white/20 pb-1 hover:border-black dark:hover:border-white transition-colors text-[#1d1d1f] dark:text-[#f5f5f7] cursor-none"
           >
             <span>{t.home.alleProjekteEntdecken}</span>
             <span>&rarr;</span>

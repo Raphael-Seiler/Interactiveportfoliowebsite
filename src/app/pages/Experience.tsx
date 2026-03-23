@@ -182,9 +182,9 @@ export function Experience() {
   }, [N, getStationScroll, activeIndex, itemSpacing]);
 
   return (
-    <div className="w-full pb-32 pt-10">
+    <div className="w-full pb-32 pt-48">
       {/* Fixed Title Header */}
-      <div className="max-w-6xl mx-auto px-6 md:px-12 mb-4 relative z-30 pointer-events-none">
+      <div className="max-w-6xl mx-auto px-6 md:px-12 mb-8 relative z-30 pointer-events-none">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -204,7 +204,7 @@ export function Experience() {
       </div>
 
       {/* The Timeline Area */}
-      <div className="relative w-full h-[800px] md:h-[950px] overflow-hidden z-10">
+      <div className="relative w-full h-[850px] md:h-[1000px] overflow-hidden z-10">
         {/* Scrollable Container */}
         <div
           ref={containerRef}
@@ -346,7 +346,7 @@ export function Experience() {
         </div>
 
         {/* Minimal progress bar */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5">
           {experiences.map((_, i) => (
             <motion.div
               key={`dot-${i}`}
