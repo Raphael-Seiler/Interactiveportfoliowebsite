@@ -7,17 +7,34 @@ import {
   useMotionValue,
   AnimatePresence,
 } from "motion/react";
-import { Car } from "lucide-react";
+import { Car, ChevronLeft, ChevronRight } from "lucide-react";
 import { experiences } from "../data";
 import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
+import ClickSpark from "../components/ClickSpark";
 
 export function Experience() {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollVelocity = useMotionValue(0);
   const { lang } = useLanguage();
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    };
+    checkDarkMode();
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
 
   const t = translations[lang];
+
+  // Drag scrolling state
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartX = useRef<number>(0);
+  const scrollStart = useRef<number>(0);
 
   // Track horizontal scroll of the container
   const { scrollXProgress } = useScroll({
@@ -86,6 +103,36 @@ export function Experience() {
     },
     [N]
   );
+
+  // Drag scrolling handlers
+  const handleDragStart = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    setIsDragging(true);
+    dragStartX.current = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+    scrollStart.current = container.scrollLeft;
+    container.style.cursor = "grabbing";
+  }, []);
+
+  const handleDragMove = useCallback((e: MouseEvent | TouchEvent) => {
+    if (!isDragging) return;
+
+    const container = containerRef.current;
+    if (!container) return;
+
+    const currentX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+    const deltaX = currentX - dragStartX.current;
+    container.scrollLeft = scrollStart.current - deltaX;
+  }, [isDragging]);
+
+  const handleDragEnd = useCallback(() => {
+    setIsDragging(false);
+    const container = containerRef.current;
+    if (container) {
+      container.style.cursor = "grab";
+    }
+  }, []);
 
   // Auto-drive car to nearest station after scrolling stops - consistent smooth animation
   useEffect(() => {
@@ -173,18 +220,36 @@ export function Experience() {
 
     window.addEventListener("keydown", handleKeyDown);
 
+    // Drag event listeners
+    window.addEventListener("mousemove", handleDragMove);
+    window.addEventListener("touchmove", handleDragMove);
+    window.addEventListener("mouseup", handleDragEnd);
+    window.addEventListener("touchend", handleDragEnd);
+
     return () => {
       container.removeEventListener("scroll", handleScrollEnd);
       window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("mousemove", handleDragMove);
+      window.removeEventListener("touchmove", handleDragMove);
+      window.removeEventListener("mouseup", handleDragEnd);
+      window.removeEventListener("touchend", handleDragEnd);
       clearTimeout(scrollEndTimeout);
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
     };
-  }, [N, getStationScroll, activeIndex, itemSpacing]);
+  }, [N, getStationScroll, activeIndex, itemSpacing, handleDragMove, handleDragEnd]);
 
   return (
-    <div className="w-full pb-32 pt-10">
+    <ClickSpark
+      sparkColor={isDark ? '#ffffff' : '#000000'}
+      sparkSize={19}
+      sparkRadius={40}
+      sparkCount={13}
+      duration={400}
+      disableOnMobile
+    >
+      <div className="w-full pb-[100px] pt-48">
       {/* Fixed Title Header */}
-      <div className="max-w-6xl mx-auto px-6 md:px-12 mb-4 relative z-30 pointer-events-none">
+      <div className="max-w-6xl mx-auto px-6 md:px-12 mb-8 relative z-30 pointer-events-none">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -204,15 +269,18 @@ export function Experience() {
       </div>
 
       {/* The Timeline Area */}
-      <div className="relative w-full h-[800px] md:h-[950px] overflow-hidden z-10">
+      <div className="relative w-full h-[850px] md:h-[1000px] z-10">
         {/* Scrollable Container */}
         <div
           ref={containerRef}
-          className="w-full h-full overflow-x-auto overflow-y-hidden relative z-10 [&::-webkit-scrollbar]:hidden"
+          className="w-full h-full overflow-x-auto overflow-y-hidden relative z-10 [&::-webkit-scrollbar]:hidden cursor-grab active:cursor-grabbing"
           style={{
             scrollbarWidth: "none",
             msOverflowStyle: "none",
+            userSelect: isDragging ? "none" : "auto",
           }}
+          onMouseDown={handleDragStart}
+          onTouchStart={handleDragStart}
         >
           {/* Inner scrolling track */}
           <div
@@ -345,28 +413,43 @@ export function Experience() {
           </motion.div>
         </div>
 
-        {/* Minimal progress bar */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5">
-          {experiences.map((_, i) => (
+        {/* Navigation arrows with progress bar */}
+        {!isMobile && (
+        <div className="absolute bottom-[-40px] left-1/2 -translate-x-1/2 z-30 flex items-center gap-3">
+          <button
+            onClick={() => {
+              const container = containerRef.current;
+              if (!container || activeIndex === 0) return;
+              const targetIndex = activeIndex - 1;
+              const targetScroll = getStationScroll(targetIndex);
+              container.scrollTo({ left: targetScroll, behavior: 'smooth' });
+            }}
+            className="p-2 rounded-full bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+            aria-label="Scroll left"
+          >
+            <ChevronLeft size={20} className="text-[#1d1d1f] dark:text-[#f5f5f7]" />
+          </button>
+          <div className="flex items-center gap-1.5">
+            {experiences.map((_, i) => (
+              <motion.div
+                key={`dot-${i}`}
+                className={`rounded-full ${
+                  activeIndex === i
+                    ? "bg-black/40 dark:bg-white/40"
+                    : "bg-black/10 dark:bg-white/10"
+                }`}
+                animate={{
+                  width: activeIndex === i ? 20 : 5,
+                  height: 5,
+                }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              />
+            ))}
             <motion.div
-              key={`dot-${i}`}
               className={`rounded-full ${
-                activeIndex === i
+                activeIndex === N
                   ? "bg-black/40 dark:bg-white/40"
                   : "bg-black/10 dark:bg-white/10"
-              }`}
-              animate={{
-                width: activeIndex === i ? 20 : 5,
-                height: 5,
-              }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-            />
-          ))}
-          <motion.div
-            className={`rounded-full ${
-              activeIndex === N
-                ? "bg-black/40 dark:bg-white/40"
-                : "bg-black/10 dark:bg-white/10"
             }`}
             animate={{
               width: activeIndex === N ? 20 : 5,
@@ -374,9 +457,25 @@ export function Experience() {
             }}
             transition={{ duration: 0.3, ease: "easeOut" }}
           />
+          </div>
+          <button
+            onClick={() => {
+              const container = containerRef.current;
+              if (!container || activeIndex >= N) return;
+              const targetIndex = activeIndex + 1;
+              const targetScroll = getStationScroll(targetIndex);
+              container.scrollTo({ left: targetScroll, behavior: 'smooth' });
+            }}
+            className="p-2 rounded-full bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+            aria-label="Scroll right"
+          >
+            <ChevronRight size={20} className="text-[#1d1d1f] dark:text-[#f5f5f7]" />
+          </button>
         </div>
+        )}
       </div>
     </div>
+    </ClickSpark>
   );
 }
 

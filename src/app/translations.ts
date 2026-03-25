@@ -7,15 +7,16 @@ export const translations = {
       kontakt: 'Kontakt',
     },
     home: {
-      featuredProjects: 'Featured Projects.',
+      featuredProjects: 'Ausgewählte Projekte.',
       highlights: 'Highlights aus meiner Arbeit.',
       hello: 'Hallo, ich bin',
       name: 'Raphi.',
       description: 'Ein angehender UX-Designer mit dem Ziel, komplexe Probleme durch empathisches und minimalistisches Design zu lösen.',
       philosophie: 'Philosophie',
-      meinePhilosophie: 'Meine Philosophie',
-      philosophieText: 'Meine Arbeit soll etwas Positives in der Welt bewegen. Mich fasziniert es, komplizierte Probleme anzupacken und einfache, gute Lösungen dafür zu finden. Dabei ist es mir besonders wichtig, dass meine Designs für alle Menschen leicht verständlich und ohne Hürden nutzbar sind.',
+      philosophieTitle: 'Meine Arbeit...',
+      philosophieText: '...soll etwas Positives in der Welt bewegen. Mich fasziniert es, komplizierte Probleme anzupacken und einfache, gute Lösungen dafür zu finden. Dabei ist es mir besonders wichtig, dass meine Designs für alle Menschen leicht verständlich und ohne Hürden nutzbar sind.',
       staerken: 'Stärken',
+      staerkenTitle: 'Meine Stärken sind...',
       staerkenList: [
         'Prototyping & Iteration',
         'Nutzerverständnis (Empathie)',
@@ -23,10 +24,10 @@ export const translations = {
         'Neugier & Lernbereitschaft',
       ],
       entwicklung: 'Entwicklung',
+      entwicklungTitle: 'Ich arbeite daran...',
       entwicklungList: [
-        'Mehr Praxiserfahrung',
-        'Perfektionismus zügeln',
-        'Coding-Skills ausbauen',
+        'mehr Praxiserfahrung zu sammeln',
+        'meine Coding-Skills auszubauen',
       ],
       hobbies: 'Hobbies',
       wennIchNichtDesigne: 'Wenn ich mal nicht designe...',
@@ -50,6 +51,7 @@ export const translations = {
       Alle: 'Alle',
       Real: 'Reale Projekte',
       Studium: 'Studium',
+      viewDetails: 'Details ansehen',
     },
     experience: {
       title: 'Werdegang.',
@@ -72,6 +74,16 @@ export const translations = {
     footer: {
       copyright: 'Raphaël Seiler. UX Designer.',
     },
+    projectDetail: {
+      backToProjects: 'Zurück zu Projekten',
+      projectNotFound: 'Projekt nicht gefunden.',
+      projectCharter: 'Project Charter',
+      ourGoal: 'Unser Ziel',
+      prozess: 'Prozess',
+      process: 'Process',
+      result: 'Resultat',
+      reflection: 'Reflexion',
+    },
   },
   en: {
     nav: {
@@ -87,9 +99,10 @@ export const translations = {
       name: 'Raphi.',
       description: 'An aspiring UX designer with the goal of solving complex problems through empathetic and minimalist design.',
       philosophie: 'Philosophy',
-      meinePhilosophie: 'My Philosophy',
-      philosophieText: 'My work should make a positive impact in the world. I\'m fascinated by tackling complicated problems and finding simple, good solutions for them. It\'s especially important to me that my designs are easy to understand and accessible for everyone.',
+      philosophieTitle: 'My work...',
+      philosophieText: '...should make a positive impact in the world. I\'m fascinated by tackling complicated problems and finding simple, good solutions for them. It\'s especially important to me that my designs are easy to understand and accessible for everyone.',
       staerken: 'Strengths',
+      staerkenTitle: 'My strengths are...',
       staerkenList: [
         'Prototyping & Iteration',
         'User Understanding (Empathy)',
@@ -97,10 +110,10 @@ export const translations = {
         'Curiosity & Willingness to Learn',
       ],
       entwicklung: 'Growth',
+      entwicklungTitle: 'I\'m working on...',
       entwicklungList: [
-        'More Practical Experience',
-        'Manage Perfectionism',
-        'Expand Coding Skills',
+        'gaining more practical experience',
+        'expanding my coding skills',
       ],
       hobbies: 'Hobbies',
       wennIchNichtDesigne: 'When I\'m not designing...',
@@ -124,6 +137,7 @@ export const translations = {
       Alle: 'All',
       Real: 'Real Projects',
       Studium: 'Academic',
+      viewDetails: 'View Details',
     },
     experience: {
       title: 'Experience.',
@@ -145,6 +159,16 @@ export const translations = {
     },
     footer: {
       copyright: 'Raphaël Seiler. UX Designer.',
+    },
+    projectDetail: {
+      backToProjects: 'Back to Projects',
+      projectNotFound: 'Project not found.',
+      projectCharter: 'Project Charter',
+      ourGoal: 'Our Goal',
+      prozess: 'Prozess',
+      process: 'Process',
+      result: 'Result',
+      reflection: 'Reflection',
     },
   },
 };

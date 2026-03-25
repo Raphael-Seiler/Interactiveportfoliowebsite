@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, Moon, Sun } from 'lucide-react';
-import logoImg from '../../assets/RS_Logo.png';
+import logoImg from '../../assets/shared/RS_Logo.png';
 import { ImageWithFallback } from './ImageWithFallback';
 import { CustomCursor } from './CustomCursor';
 import LineWaves from './LineWaves';
@@ -41,13 +41,18 @@ export function Layout() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
-    
+
     window.addEventListener('scroll', handleScroll);
-    
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [location.pathname]);
 
   const navLinks = [
     { name: translations[lang].nav.ich, path: '/' },
@@ -65,14 +70,14 @@ export function Layout() {
 
   return (
     <div
-      className="min-h-screen bg-white dark:bg-black text-[#1d1d1f] dark:text-[#f5f5f7] flex flex-col relative overflow-x-hidden selection:bg-black/10 dark:selection:bg-white/10 selection:text-black dark:selection:text-white transition-colors duration-500 cursor-none"
+      className="min-h-screen bg-white dark:bg-black text-[#1d1d1f] dark:text-[#f5f5f7] flex flex-col relative selection:bg-black/10 dark:selection:bg-white/10 selection:text-black dark:selection:text-white transition-colors duration-500 cursor-none"
       style={minimalFontStyle}
     >
       {/* Custom Cursor */}
       <CustomCursor isDark={isDark} />
 
       {/* Global subtle ambient background */}
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-[0.6] dark:opacity-[0.3] overflow-hidden">
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-[0.6] dark:opacity-[0.15] overflow-hidden">
 
         {/* The static base color blobs using massive radial gradients to prevent hard clipping edges */}
         <div className="absolute inset-0 mix-blend-multiply dark:mix-blend-normal opacity-100 transition-opacity duration-500">
@@ -101,7 +106,7 @@ export function Layout() {
           rotation={-45}
           edgeFadeWidth={0.1}
           colorCycleSpeed={0.3}
-          brightness={0.08}
+          brightness={isDark ? 0.05 : 0.08}
           color1="#ffffff"
           color2="#e0e0e0"
           color3="#d0d0d0"
@@ -112,10 +117,10 @@ export function Layout() {
       </div>
 
       <header
-        className="fixed top-0 w-full z-[100] py-6 bg-white/30 dark:bg-black/30 backdrop-blur-md"
+        className="fixed top-0 w-full z-50 py-6 bg-white/30 dark:bg-black/30 backdrop-blur-md cursor-none"
       >
         <div className="max-w-6xl mx-auto px-6 md:px-12 flex justify-between items-center">
-          <NavLink to="/" className="hover:opacity-70 transition-opacity">
+          <NavLink to="/" className="hover:opacity-70 transition-opacity cursor-none">
             <ImageWithFallback src={logoImg} alt="Raphi Logo" className="h-8 w-auto dark:invert" />
           </NavLink>
 
@@ -127,7 +132,7 @@ export function Layout() {
                 to={link.path}
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 className={({ isActive }) =>
-                  `text-sm font-medium transition-all duration-300 relative ${
+                  `text-sm font-medium transition-all duration-300 relative cursor-none ${
                     isActive ? 'text-black dark:text-white' : 'text-[#55555a] hover:text-black dark:hover:text-white'
                   }`
                 }
@@ -149,14 +154,14 @@ export function Layout() {
             
             <button
               onClick={toggleTheme}
-              className="p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-[#55555a] hover:text-black dark:hover:text-white"
+              className="p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-[#55555a] hover:text-black dark:hover:text-white cursor-none"
               aria-label="Toggle dark mode"
             >
               {isDark ? <Sun size={18} strokeWidth={1.5} /> : <Moon size={18} strokeWidth={1.5} />}
             </button>
             <button
               onClick={toggleLang}
-              className="px-3 py-1.5 rounded-full border border-black/10 dark:border-white/10 text-xs font-medium transition-colors text-[#55555a] hover:text-black dark:hover:text-white"
+              className="px-3 py-1.5 rounded-full border border-black/10 dark:border-white/10 text-xs font-medium transition-colors text-[#55555a] hover:text-black dark:hover:text-white cursor-none"
               aria-label="Toggle language"
             >
               {lang === 'de' ? 'DE' : 'EN'}
@@ -165,16 +170,16 @@ export function Layout() {
 
           {/* Mobile Menu Button & Theme Toggle */}
           <div className="md:hidden flex items-center space-x-2 z-[60] relative">
-            <button 
-              onClick={toggleTheme} 
-              className="p-2 text-[#55555a] hover:text-black dark:hover:text-white transition-colors rounded-full"
+            <button
+              onClick={toggleTheme}
+              className="p-2 text-[#55555a] hover:text-black dark:hover:text-white transition-colors rounded-full cursor-none"
               aria-label="Toggle dark mode"
             >
               {isDark ? <Sun size={20} strokeWidth={1.5} /> : <Moon size={20} strokeWidth={1.5} />}
             </button>
-            <button 
-              onClick={toggleMenu} 
-              className="p-2 text-[#1d1d1f] dark:text-[#f5f5f7] hover:opacity-70 transition-opacity rounded-full"
+            <button
+              onClick={toggleMenu}
+              className="p-2 text-[#1d1d1f] dark:text-[#f5f5f7] hover:opacity-70 transition-opacity rounded-full cursor-none"
               aria-label="Toggle menu"
             >
               {isMenuOpen ? <X size={20} strokeWidth={1.5} /> : <Menu size={20} strokeWidth={1.5} />}
@@ -192,9 +197,9 @@ export function Layout() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3, delay: 0.1 }}
-                className="fixed top-24 left-6 right-6 z-[60] bg-white/95 dark:bg-[#1c1c1e]/95 border border-black/10 dark:border-white/10 rounded-3xl py-6 px-8 md:hidden shadow-2xl shadow-black/10 dark:shadow-black/50"
+                className="fixed top-24 left-6 right-6 z-[60] bg-white/95 dark:bg-[#1c1c1e]/95 border border-black/10 dark:border-white/10 rounded-3xl py-6 px-8 md:hidden shadow-2xl shadow-black/10 dark:shadow-black/50 cursor-none"
               >
-                <div className="flex flex-col space-y-6 items-center justify-center">
+                <div className="flex flex-col space-y-6 items-center justify-center cursor-none">
                   {navLinks.map((link) => (
                     <NavLink
                       key={link.name}
@@ -204,7 +209,7 @@ export function Layout() {
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
                       className={({ isActive }) =>
-                        `text-2xl font-semibold tracking-tight transition-all duration-300 ${
+                        `text-2xl font-semibold tracking-tight transition-all duration-300 cursor-none ${
                           isActive ? 'text-black dark:text-white scale-105' : 'text-[#86868b] dark:text-[#86868b] hover:text-black dark:hover:text-white'
                         }`
                       }
@@ -217,7 +222,7 @@ export function Layout() {
                       toggleLang();
                       setIsMenuOpen(false);
                     }}
-                    className="px-4 py-2 rounded-full border border-black/10 dark:border-white/10 text-sm font-medium transition-colors text-[#55555a] dark:text-[#e5e5ea]"
+                    className="px-4 py-2 rounded-full border border-black/10 dark:border-white/10 text-sm font-medium transition-colors text-[#55555a] dark:text-[#e5e5ea] cursor-none"
                   >
                     {lang === 'de' ? 'DE → EN' : 'EN → DE'}
                   </button>
@@ -228,7 +233,7 @@ export function Layout() {
         </AnimatePresence>
       </header>
 
-      <main className="flex-grow pt-24 md:pt-32 relative z-10">
+      <main className="flex-grow pt-0 md:pt-0 relative z-10">
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}
@@ -242,8 +247,10 @@ export function Layout() {
         </AnimatePresence>
       </main>
 
-      <footer className="relative z-[10] py-12 text-center mt-20 flex flex-col items-center justify-center space-y-6 bg-white/20 dark:bg-black/20 backdrop-blur-md">
-        <ImageWithFallback src={logoImg} alt="Raphi Logo" className="h-10 w-auto dark:invert opacity-60 hover:opacity-100 transition-opacity" />
+      <footer className="relative z-[20] text-center py-8 flex flex-col items-center justify-center space-y-4 bg-white/20 dark:bg-black/20 backdrop-blur-md border-0 pointer-events-none">
+        <NavLink to="/" className="pointer-events-auto">
+          <ImageWithFallback src={logoImg} alt="Raphi Logo" className="h-10 w-auto dark:invert opacity-60 hover:opacity-100 transition-opacity mb-2" />
+        </NavLink>
         <p className="text-xs text-[#55555a] dark:text-[#e5e5ea] font-medium">
           © {new Date().getFullYear()} {translations[lang].footer.copyright}
         </p>

@@ -3,11 +3,24 @@ import { motion } from 'motion/react';
 import { Linkedin, Instagram } from 'lucide-react';
 import { translations } from '../translations';
 import { useLanguage } from '../context/LanguageContext';
+import ClickSpark from '../components/ClickSpark';
+import { useEffect } from 'react';
 
 export function Contact() {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   const [hasFocus, setHasFocus] = useState(false);
   const { lang } = useLanguage();
+
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    };
+    checkDarkMode();
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
 
   const t = translations[lang];
 
@@ -38,10 +51,18 @@ export function Contact() {
   };
 
   return (
-    <div className="w-full pb-32 min-h-[80vh] flex items-center">
+    <ClickSpark
+      sparkColor={isDark ? '#ffffff' : '#000000'}
+      sparkSize={19}
+      sparkRadius={40}
+      sparkCount={13}
+      duration={400}
+      disableOnMobile
+    >
+      <div className="w-full min-h-[80vh] flex items-center">
       <div className="max-w-3xl mx-auto px-6 md:px-12 w-full relative">
 
-        <div className="mb-20 text-center relative z-10 pt-20">
+        <div className="mb-20 text-center relative z-10 pt-48">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -127,7 +148,7 @@ export function Contact() {
 
                 <button
                   type="submit"
-                  className={`w-full py-4 text-white dark:text-[#111111] rounded-xl font-medium tracking-wide shadow-lg shadow-black/10 dark:shadow-none transition-all duration-300 ${
+                  className={`w-full py-4 text-white dark:text-[#111111] rounded-xl font-medium tracking-wide shadow-lg shadow-black/10 dark:shadow-none transition-all duration-300 cursor-none ${
                     hasFocus
                       ? 'bg-[#1d1d1f] dark:bg-[#f5f5f7] hover:bg-black dark:hover:bg-white opacity-100'
                       : 'bg-[#1d1d1f]/50 dark:bg-[#f5f5f7]/50 opacity-60'
@@ -140,12 +161,12 @@ export function Contact() {
           )}
         </motion.div>
 
-        <div className="mt-20 flex justify-center items-center space-x-10">
+        <div className="mt-16 flex justify-center items-center space-x-10">
           <a
             href="https://www.linkedin.com/in/rapha%C3%ABl-seiler-47b3a1338"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[#86868b] hover:text-[#0A66C2] dark:hover:text-[#0A66C2] transition-colors"
+            className="text-[#86868b] hover:text-[#0A66C2] dark:hover:text-[#0A66C2] transition-colors cursor-none"
             aria-label="LinkedIn"
           >
             <Linkedin size={32} strokeWidth={1.5} />
@@ -154,13 +175,14 @@ export function Contact() {
             href="https://www.instagram.com/seiler_raphi/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[#86868b] hover:text-[#E4405F] dark:hover:text-[#E4405F] transition-colors"
+            className="text-[#86868b] hover:text-[#E4405F] dark:hover:text-[#E4405F] transition-colors cursor-none"
             aria-label="Instagram"
           >
             <Instagram size={32} strokeWidth={1.5} />
           </a>
         </div>
+        </div>
       </div>
-    </div>
+      </ClickSpark>
   );
 }
