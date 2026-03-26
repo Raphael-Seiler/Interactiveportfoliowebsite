@@ -64,8 +64,7 @@ export function Experience() {
   const startOffsetVW = isMobile ? 50 : 20;
   const endCarVW = 50;
 
-  const S_N = Math.max(1, N * itemSpacing + (startOffsetVW - endCarVW) * vw);
-  const maxScroll = S_N;
+  const maxScroll = Math.max(1, N * itemSpacing + (startOffsetVW - endCarVW) * vw);
 
   // Car position
   const carX = useTransform(
@@ -497,11 +496,15 @@ function ItemCard({ exp, isActive }: { exp: any; isActive: boolean }) {
         y: isActive ? 0 : 4,
       }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className={`p-6 md:p-8 rounded-3xl border transition-all duration-500 w-[300px] md:w-[380px] relative z-10 backdrop-blur-md overflow-hidden ${
+      className={`p-6 md:p-8 rounded-3xl border transition-all duration-500 w-[300px] md:w-[380px] relative z-10 backdrop-blur-md ${
         isActive
-          ? "border-black/20 dark:border-white/20 shadow-lg bg-white/80 dark:bg-black/80 max-h-[400px]"
-          : "border-black/10 dark:border-white/10 bg-white/40 dark:bg-black/40 max-h-[340px]"
+          ? "border-black/20 dark:border-white/20 shadow-lg bg-white/80 dark:bg-black/80"
+          : "border-black/10 dark:border-white/10 bg-white/40 dark:bg-black/40"
       }`}
+      style={{
+        overflow: isActive ? 'visible' : 'hidden',
+        maxHeight: isActive ? 'none' : '340px'
+      }}
     >
       <span
         className={`inline-block px-3 py-1 bg-transparent border text-[10px] font-bold tracking-wider uppercase rounded-full mb-3 transition-colors duration-500 ${

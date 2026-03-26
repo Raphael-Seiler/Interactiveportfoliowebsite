@@ -2,15 +2,13 @@ import InfiniteMenu from "../components/InfiniteMenu";
 import { useNavigate } from "react-router";
 import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
-import logoImg from "../../assets/RS_Logo.png";
 import fruitDudeImg from "../../assets/projects/spryte/Fruit_Dude.png";
-import { ImageWithFallback } from "../components/ImageWithFallback";
 import ClickSpark from "../components/ClickSpark";
 import { useState, useEffect } from "react";
 
 const projects = [
   {
-    id: "1",
+    id: "spryte",
     image: fruitDudeImg,
     title: "SPRYTE",
     description: "Ein interaktives Ökosystem für standortübergreifende Pixel-Kunst."

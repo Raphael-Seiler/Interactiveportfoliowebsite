@@ -12,6 +12,8 @@ import screen3Img from "../../assets/projects/spryte/Screen_3.png";
 import screen4Img from "../../assets/projects/spryte/Screen_4.png";
 import userFlowImg from "../../assets/projects/spryte/UserFlow.png";
 import groupPicImg from "../../assets/projects/spryte/Grouppic.png";
+import spryteLogoImg from "../../assets/projects/spryte/Spryte_Logo.png";
+import figmaLogoImg from "../../assets/projects/spryte/Figma-logo.svg";
 
 const placeholderProjects: Record<string, {
   title: { de: string; en: string };
@@ -23,7 +25,7 @@ const placeholderProjects: Record<string, {
   result: { de: string; en: string };
   reflection: { de: string; en: string };
 }> = {
-  "1": {
+  "spryte": {
     title: { de: "SPRYTE", en: "SPRYTE" },
     description: {
       de: "Ein interaktives Ökosystem für standortübergreifende Pixel-Kunst.",
@@ -77,8 +79,8 @@ const placeholderProjects: Record<string, {
       ]
     },
     highlight: {
-      de: "Der krönende Abschluss war die Präsentation vor UX-Repräsentanten führender Firmen wie der Migros und der SBB. Dass Profis von solch namhaften Unternehmen unsere fundierte Herleitung und das durchdachte Konzept der «strukturierten Kollaboration» lobten, war die grösste Bestätigung für unsere Arbeit.",
-      en: "The crowning conclusion was the presentation to UX representatives from leading companies like Migros and SBB. Having professionals from such renowned companies praise our solid rationale and well-thought-out concept of 'structured collaboration' was the greatest confirmation of our work."
+      de: "Der absolute Höhepunkt des Projekts war für mich die finale Präsentation. Endlich durften wir unser Konzept der ‹standortübergreifenden Kollaboration› vorstellen. Es war eine besondere Ehre, vor unseren Dozenten und erfahrenen UX-Grössen zu stehen. Vertreter von Firmen wie der Migros, der SBB und weiteren Branchenführern waren dabei. Ehrlich gesagt war der Moment auch ein wenig nervenaufreibend. Diese Profis jonglieren täglich enorm komplexe Systemen. Dass sie unsere Herleitung sofort verstanden, war ein tolles Gefühl. Sie lobten explizit die kreative Idee und praktische Tiefe unseres Ansatzes. Das war für mich die schönste Bestätigung für all die späten Arbeitsstunden.",
+      en: "The absolute highlight of the project for me was the final presentation. Finally, we were able to present our concept of 'cross-location collaboration'. It was a special honor to stand before our lecturers and experienced UX experts. Representatives from companies like Migros, SBB and other industry leaders were there. Honestly, the moment was also a bit nerve-wracking. These professionals juggle enormously complex systems daily. That they immediately understood our rationale was a great feeling. They explicitly praised the creative idea and practical depth of our approach. That was the nicest confirmation for me of all those late working hours."
     },
     reflection: {
       de: "Das Projekt hat mir gezeigt, dass gutes Design die Brücke zwischen Technik und Mensch schlägt. Die Arbeit im 6er-Team war intensiv und lehrreich – besonders die Herausforderung, komplexe Interaktionen so zu reduzieren, dass sie im Vorbeilaufen funktionieren. SPRYTE zeigt, dass auch in einer digitalen Welt der physische Raum und das gemeinsame Erlebnis unersetzbar sind.",
@@ -232,11 +234,11 @@ export function ProjectDetail() {
 
         {/* Milky Background Container */}
         <div className="rounded-[2.5rem] bg-white/80 dark:bg-black/60 backdrop-blur-xl px-8 md:px-12 py-12 mt-8">
-          <h1 className="text-4xl md:text-6xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] mb-8">
-            {project.title[lang]}
-          </h1>
+          <div className="flex justify-center mb-8">
+            <img src={spryteLogoImg} alt="SPRYTE Logo" className="h-32 md:h-48 w-auto object-contain" />
+          </div>
 
-          <p className="text-lg text-[#55555a] dark:text-[#e5e5ea] font-light leading-relaxed mb-12">
+          <p className="text-lg text-[#55555a] dark:text-[#e5e5ea] font-light leading-relaxed mb-12 text-center">
             {project.description[lang]}
           </p>
 
@@ -276,6 +278,20 @@ export function ProjectDetail() {
           <h2 className="text-sm font-medium tracking-widest uppercase text-[#55555a] dark:text-[#e5e5ea] mb-4">
             {lang === 'de' ? t.projectDetail.prozess : t.projectDetail.process}
           </h2>
+          {/* User Flow Image at Top */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-8 flex flex-col items-center"
+          >
+            <div className="bg-white dark:bg-gray-200 rounded-2xl p-6 shadow-lg">
+              <img src={userFlowImg} alt="User Flow Diagramm zeigt den SPRYTE-Nutzungsprozess vom ID-Scan bis zum gesetzten Pixel" className="w-[600px] max-w-full h-auto" />
+            </div>
+            <p className="text-xs text-[#55555a] dark:text-[#e5e5ea] mt-3 text-center">
+              {lang === 'de' ? 'User Flow: Vom ID-Scan zum gesetzten Pixel' : 'User Flow: From ID scan to placed pixel'}
+            </p>
+          </motion.div>
           <div className="space-y-4">
             {Array.isArray(project.process[lang]) ? (
               project.process[lang].map((phase, i) => (
@@ -288,19 +304,6 @@ export function ProjectDetail() {
                       {phase.desc}
                     </p>
                   </div>
-                  {i === 1 && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.3 }}
-                      className="mt-4 mb-6 flex flex-col items-center"
-                    >
-                      <img src={userFlowImg} alt="User Flow Diagramm zeigt den SPRYTE-Nutzungsprozess vom ID-Scan bis zum gesetzten Pixel" className="w-[600px] max-w-full h-auto" />
-                      <p className="text-xs text-[#55555a] dark:text-[#e5e5ea] mt-3 text-center">
-                        {lang === 'de' ? 'User Flow: Vom ID-Scan zum gesetzten Pixel' : 'User Flow: From ID scan to placed pixel'}
-                      </p>
-                    </motion.div>
-                  )}
                 </div>
               ))
             ) : (
@@ -340,6 +343,34 @@ export function ProjectDetail() {
           </div>
         </motion.section>
 
+        {/* Figma Prototype Link */}
+        <motion.section
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.45 }}
+          className="flex justify-center"
+        >
+          <a
+            href="https://www.figma.com/proto/qQ9rpUbWYi582pMQEB1UnU/Spryte?node-id=436-822&viewport=921%2C-656%2C0.08&t=508QId7KkcGBQnm5-8&scaling=scale-down&content-scaling=fixed&starting-point-node-id=436%3A822&page-id=0%3A1&hide-ui=1"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center gap-3 cursor-pointer"
+          >
+            <span className="text-sm text-[#55555a] dark:text-[#e5e5ea] font-medium">
+              {lang === 'de' ? 'Teste unseren Prototyp' : 'Try out our prototype'}
+            </span>
+            <svg className="w-4 h-4 text-[#55555a] dark:text-[#e5e5ea] transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+            <img
+              src={figmaLogoImg}
+              alt="Figma Prototype"
+              className="w-24 h-24 object-contain transition-transform duration-300 group-hover:scale-105"
+            />
+          </a>
+        </motion.section>
+
         {/* Highlight */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
@@ -361,7 +392,7 @@ export function ProjectDetail() {
             >
               <img src={groupPicImg} alt="Teamfoto der Projektgruppe Zitrone bei der SPRYTE-Präsentation vor UX-Experten" className="w-[450px] max-w-full h-auto rounded-2xl" />
               <p className="text-xs text-[#55555a] dark:text-[#e5e5ea] mt-3 text-center">
-                {lang === 'de' ? 'Präsentation vor UX-Experten der Migros und SBB' : 'Presentation to UX experts from Migros and SBB'}
+                {lang === 'de' ? 'Präsentation vor UX-Experten der Migros, SBB und weiteren' : 'Presentation to UX experts from Migros, SBB and more'}
               </p>
             </motion.div>
           </div>
